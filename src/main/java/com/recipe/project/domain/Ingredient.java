@@ -1,7 +1,6 @@
 package com.recipe.project.domain;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @Entity
 public class Ingredient {
@@ -10,7 +9,18 @@ public class Ingredient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private BigDecimal amount;
+    private Integer amount;
+
+    public Ingredient(String name, Recipe recipe, Integer amount, UnitOfMeasure uom) {
+        this.name = name;
+        this.recipe = recipe;
+        this.amount = amount;
+        this.uom = uom;
+    }
+
+    public Ingredient() {
+
+    }
 
     @OneToOne(fetch = FetchType.EAGER)
     private UnitOfMeasure uom;
@@ -26,15 +36,12 @@ public class Ingredient {
         this.id = id;
     }
 
-    public Ingredient(String name) {
-        this.name = name;
-    }
 
-    public BigDecimal getAmount() {
+    public Integer getAmount() {
         return amount;
     }
 
-    public void setAmount(BigDecimal amount) {
+    public void setAmount(Integer amount) {
         this.amount = amount;
     }
 
@@ -52,5 +59,13 @@ public class Ingredient {
 
     public void setUom(UnitOfMeasure uom) {
         this.uom = uom;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

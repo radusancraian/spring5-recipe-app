@@ -5,6 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-<h1>My Recipes!</h1>
+<h1>My Recipe!</h1>
+Name <p th:text="${recipe.getName()}"></p>
+Difficulty <p th:text="${recipe.getDifficulty()}"></p>
+Description <p th:text="${recipe.getDescription()}"></p>
+Ingredients: </br>
+<ul th:each="ingredient: ${recipe.getIngredients()}">
+    <li th:text="${ingredient.getAmount()} + ' ' + ${ingredient.getUom().getDescription()} + ' ' + ${ingredient.getName()}"></li>
+</ul>
 </body>
 </html>

@@ -10,7 +10,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Component
@@ -22,10 +21,11 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
     private RecipeRepository recipeRepository;
 
 
-    public DevBootstrap(CategoryRepository categoryRepository, UnitOfMeasureRepository unitOfMeasureRepository, IngredientRepository ingredientRepository) {
+    public DevBootstrap(CategoryRepository categoryRepository, UnitOfMeasureRepository unitOfMeasureRepository, IngredientRepository ingredientRepository, RecipeRepository recipeRepository) {
         this.categoryRepository = categoryRepository;
         this.unitOfMeasureRepository = unitOfMeasureRepository;
         this.ingredientRepository = ingredientRepository;
+        this.recipeRepository = recipeRepository;
     }
 
     public void initData() {
@@ -33,15 +33,21 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
 
         Recipe guacamolePerfectRecipe = new Recipe();
         Set<Ingredient> guacamoleIngredients = new HashSet<>();
+        guacamolePerfectRecipe.setName("guacamole");
 
-        Ingredient avocado = new Ingredient("avocado");
-        Ingredient kosherSalt = new Ingredient("kosherSalt");
-        Ingredient limeJuice = new Ingredient("limeJuice");
-        Ingredient mincedRedOnion = new Ingredient("mincedRedOnion");
-        Ingredient serranoChiles = new Ingredient("serranoChiles");
-        Ingredient cilantro = new Ingredient("cilantro");
-        Ingredient freshlyGratedBlackPepper = new Ingredient("freshlyGratedBlackPepper");
-        Ingredient tomato = new Ingredient("tomato");
+       UnitOfMeasure ripe = unitOfMeasureRepository.findByDescription("Ripe");
+       UnitOfMeasure teaspoon = unitOfMeasureRepository.findByDescription("Teaspoon");
+       UnitOfMeasure tableSpoon = unitOfMeasureRepository.findByDescription("Tablespoon");
+       UnitOfMeasure dash = unitOfMeasureRepository.findByDescription("Dash");
+
+        Ingredient avocado = new Ingredient("avocado", guacamolePerfectRecipe, 2, ripe);
+        Ingredient kosherSalt = new Ingredient("kosherSalt", guacamolePerfectRecipe, 1/2, null);
+        Ingredient limeJuice = new Ingredient("limeJuice", guacamolePerfectRecipe, 1, tableSpoon);
+        Ingredient mincedRedOnion = new Ingredient("mincedRedOnion", guacamolePerfectRecipe, 2, tableSpoon);
+        Ingredient serranoChiles = new Ingredient("serranoChiles", guacamolePerfectRecipe,1,null);
+        Ingredient cilantro = new Ingredient("cilantro", guacamolePerfectRecipe, 2, tableSpoon);
+        Ingredient freshlyGratedBlackPepper = new Ingredient("freshlyGratedBlackPepper", guacamolePerfectRecipe, 1, dash);
+        Ingredient tomato = new Ingredient("tomato", guacamolePerfectRecipe, 1/2, ripe);
 
         guacamoleIngredients.add(avocado);
         guacamoleIngredients.add(kosherSalt);
@@ -53,34 +59,19 @@ public class DevBootstrap implements ApplicationListener<ContextRefreshedEvent> 
         guacamoleIngredients.add(tomato);
 
         guacamolePerfectRecipe.setIngredients(guacamoleIngredients);
-
-
-
         guacamolePerfectRecipe.setDifficulty(Difficulty.HARD);
-
-
-
+        Set<Category> categories = new HashSet<>();
+        Category veganCategory = categoryRepository.findByDescription("Vegan");
+        Category dipCategory = categoryRepository.findByDescription("Dip");
+        Category avocadoCategory = categoryRepository.findByDescription("Avocado");
+        categories.add(veganCategory);
+        categories.add(dipCategory);
+        categories.add(avocadoCategory);
+        guacamolePerfectRecipe.setCategories(categories);
+        guacamolePerfectRecipe.setDescription("Guacamole is so easy. All you really need to make guacamole is ripe avocados and salt. After that, a little lime or lemon juice—a splash of acidity— will help to balance the richness of the avocado..\n" +
+                "\n" +
+                "You can get creative with homemade guacamole!");
         recipeRepository.save(guacamolePerfectRecipe);
-
-        ingredientRepository.save(avocado);
-
-/*        ingredientRepository.save(kosherSalt);
-        ingredientRepository.save(limeJuice);
-        ingredientRepository.save(mincedRedOnion);
-        ingredientRepository.save(serranoChiles);
-        ingredientRepository.save(cilantro);
-        ingredientRepository.save(freshlyGratedBlackPepper);
-        ingredientRepository.save(tomato);*/
-
-
-        avocado.setRecipe(guacamolePerfectRecipe);
-
-
-        Optional<Category> categoryOptional =  categoryRepository.findByDescription("American");
-        Optional<UnitOfMeasure> unitOfMeasureOptional = unitOfMeasureRepository.findByDescription("Teaspoon");
-
-        System.out.println("Cat Id is: " + categoryOptional.get().getDescription());
-        System.out.println("UOM Id is: " + unitOfMeasureOptional.get().getId());
 
     }
 
