@@ -108,8 +108,11 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
         Recipe guacRecipe = new Recipe();
         guacRecipe.setDescription("Perfect Guacamole");
         guacRecipe.setPrepTime(10);
-        guacRecipe.setCookTime(0);
+        guacRecipe.setCookTime(1);
         guacRecipe.setDifficulty(Difficulty.EASY);
+        guacRecipe.setSource("perfectGuacamole.com");
+        guacRecipe.setUrl("www.perfectguac.com");
+        guacRecipe.setServings(3);
         guacRecipe.setDirections("1 Cut avocado, remove flesh: Cut the avocados in half. Remove seed. Score the inside of the avocado with a blunt knife and scoop out the flesh with a spoon" +
                 "\n" +
                 "2 Mash with a fork: Using a fork, roughly mash the avocado. (Don't overdo it! The guacamole should be a little chunky.)" +
