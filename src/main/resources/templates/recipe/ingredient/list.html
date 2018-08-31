@@ -22,6 +22,7 @@
 
                 <div class="panel-heading">
                     <h1 class="panel-title" th:text="${'Recipe ' + recipe.description + ' Ingredients'}">!</h1>
+                    <a class="btn btn-default" href="#" th:href="@{'/recipe/' + ${recipe.id} + '/ingredient/new'}" role="button" style="margin-left: 70%">New</a>
                 </div>
                 <div class="panel-body">
                     <div class="table-responsive" th:if="${not #lists.isEmpty(recipe.ingredients)}">
