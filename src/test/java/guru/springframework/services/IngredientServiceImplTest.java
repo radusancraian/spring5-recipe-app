@@ -6,6 +6,7 @@ import guru.springframework.converters.IngredientToIngredientCommand;
 import guru.springframework.converters.UnitOfMeasureToUnitOfMeasureCommand;
 import guru.springframework.domain.Ingredient;
 import guru.springframework.domain.Recipe;
+import guru.springframework.repositories.IngredientRepository;
 import guru.springframework.repositories.RecipeRepository;
 import guru.springframework.repositories.UnitOfMeasureRepository;
 import org.junit.Before;
@@ -30,6 +31,9 @@ public class IngredientServiceImplTest {
     private  IngredientServiceImpl ingredientService;
 
     @Mock
+    private final IngredientRepository ingredientRepository = null;
+
+    @Mock
     private RecipeRepository recipeRepository;
 
     @Mock
@@ -50,7 +54,7 @@ public class IngredientServiceImplTest {
 
         MockitoAnnotations.initMocks(this);
 
-        ingredientService = new IngredientServiceImpl(recipeRepository, ingredientToIngredientCommand, unitOfMeasureRepository, ingredientCommandToIngredient);
+        ingredientService = new IngredientServiceImpl(recipeRepository, ingredientRepository, ingredientToIngredientCommand, unitOfMeasureRepository, ingredientCommandToIngredient);
 
     }
 

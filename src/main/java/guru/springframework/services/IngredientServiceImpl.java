@@ -5,6 +5,7 @@ import guru.springframework.converters.IngredientCommandToIngredient;
 import guru.springframework.converters.IngredientToIngredientCommand;
 import guru.springframework.domain.Ingredient;
 import guru.springframework.domain.Recipe;
+import guru.springframework.repositories.IngredientRepository;
 import guru.springframework.repositories.RecipeRepository;
 import guru.springframework.repositories.UnitOfMeasureRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -18,13 +19,17 @@ public class IngredientServiceImpl implements IngredientService {
 
 
     private final RecipeRepository recipeRepository;
+    private final IngredientRepository ingredientRepository;
     private final IngredientToIngredientCommand ingredientToIngredientCommand;
     private final UnitOfMeasureRepository unitOfMeasureRepository;
     private final IngredientCommandToIngredient ingredientCommandToIngredient;
 
-    public IngredientServiceImpl(RecipeRepository recipeRepository, IngredientToIngredientCommand ingredientToIngredientCommand,
-                                 UnitOfMeasureRepository unitOfMeasureRepository, IngredientCommandToIngredient ingredientCommandToIngredient) {
+    public IngredientServiceImpl(RecipeRepository recipeRepository, IngredientRepository ingredientRepository,
+                                 IngredientToIngredientCommand ingredientToIngredientCommand,
+                                 UnitOfMeasureRepository unitOfMeasureRepository,
+                                 IngredientCommandToIngredient ingredientCommandToIngredient) {
         this.recipeRepository = recipeRepository;
+        this.ingredientRepository = ingredientRepository;
         this.ingredientToIngredientCommand = ingredientToIngredientCommand;
         this.unitOfMeasureRepository = unitOfMeasureRepository;
         this.ingredientCommandToIngredient = ingredientCommandToIngredient;
@@ -73,16 +78,36 @@ public class IngredientServiceImpl implements IngredientService {
                 ingredientFound.setUom(unitOfMeasureRepository.findById(command.getUom().getId()).orElseThrow(() -> new RuntimeException("UO NOT FOUND")));
             } else {
                 //add new ingredient
-                recipe.addIngredient(ingredientCommandToIngredient.convert(command));
+                Ingredient savedIngredient = ingredientCommandToIngredient.convert(command);
+                savedIngredient.setRecipe(recipe);
+                recipe.addIngredient(savedIngredient);
+
+
             }
 
             Recipe savedRecipe = recipeRepository.save(recipe);
 
+            Optional<Ingredient> savedIngredientOptional = savedRecipe.getIngredients().stream()
+                    .filter(recipeIngredients -> recipeIngredients.getId().equals(command.getId()))
+                    .findFirst();
 
-            return ingredientToIngredientCommand.convert(savedRecipe.getIngredients().stream()
-            .filter(recipeIngredients -> recipeIngredients.getId().equals(command.getId()))
-            .findFirst()
-            .get());
+            //check by description
+            if(!savedIngredientOptional.isPresent()) {
+
+                savedIngredientOptional = savedRecipe.getIngredients().stream()
+                        .filter(recipeIngredients -> recipeIngredients.getDescription().equals(command.getDescription()))
+                        .filter(recipeIngredients -> recipeIngredients.getAmount().equals(command.getAmount()))
+                        .filter(recipeIngredients -> recipeIngredients.getUom().getId().equals(command.getUom().getId()))
+                        .findFirst();
+            }
+
+
+            return ingredientToIngredientCommand.convert(savedIngredientOptional.get());
         }
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        ingredientRepository.deleteById(id);
     }
 }
