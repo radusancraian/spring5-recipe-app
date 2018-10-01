@@ -30,7 +30,6 @@ public class RecipeController {
 
     }
 
-
     @GetMapping("recipe/new")
     public String newRecipe(Model model) {
         model.addAttribute("recipe", new RecipeCommand());
@@ -63,14 +62,30 @@ public class RecipeController {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
-    public ModelAndView handleNotFound(){
+    public ModelAndView handleNotFound(Exception exception){
 
         log.error("Handling not found exception");
-
+        log.error(exception.getMessage());
         ModelAndView modelAndView = new ModelAndView();
 
         modelAndView.setViewName("404error");
+        modelAndView.addObject("exception", exception);
 
         return modelAndView;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public ModelAndView handleNumberFormat(Exception exception) {
+
+        log.error("Handling internal server error exception");
+        log.error(exception.getMessage());
+        ModelAndView modelAndView = new ModelAndView();
+
+        modelAndView.setViewName("400");
+        modelAndView.addObject("exception", exception);
+
+        return modelAndView;
+
     }
 }
