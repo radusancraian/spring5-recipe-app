@@ -74,18 +74,4 @@ public class RecipeController {
         return modelAndView;
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(NumberFormatException.class)
-    public ModelAndView handleNumberFormat(Exception exception) {
-
-        log.error("Handling internal server error exception");
-        log.error(exception.getMessage());
-        ModelAndView modelAndView = new ModelAndView();
-
-        modelAndView.setViewName("400");
-        modelAndView.addObject("exception", exception);
-
-        return modelAndView;
-
-    }
 }
