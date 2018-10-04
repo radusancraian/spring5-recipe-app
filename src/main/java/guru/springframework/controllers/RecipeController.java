@@ -56,6 +56,8 @@ public class RecipeController {
             bindingResult.getAllErrors().forEach(objectError -> {
                 log.debug(objectError.toString());
             });
+
+            return RECIPE_RECIPEFORM_URL;
        }
 
         RecipeCommand savedCommand = recipeService.saveRecipeCommand(command);
